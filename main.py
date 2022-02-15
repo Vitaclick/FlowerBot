@@ -32,16 +32,20 @@ def schedule_checker():
         schedule.run_pending()
         sleep(1)
 
-@bot.message_handler(commands=["flower"])
-def send_flowers(message):
+def get_flowers(n=1):
     img_paths = "U:\Coding\Generator\content\images_out\TimeToDiscoLocally-1"
     image_list = []
     for filename in glob.glob(f"{img_paths}/*.png"):
         im = Image.open(filename)
         image_list.append(im)
-    rand_images = random.choices(image_list, k=2)
-    for image in rand_images:
-        bot.send_photo(USER_ID, image)
+    rand_images = random.choices(image_list, k=n)
+    return rand_images
+
+@bot.message_handler(commands=["flower"])
+def send_flowers(message):
+
+    for image in get_flowers():
+        bot.send_photo(message.from_user.id, image)
 
 if __name__ == "__main__":
     Thread(target=bot.infinity_polling, name='bot_infinity_polling', daemon=True).start()

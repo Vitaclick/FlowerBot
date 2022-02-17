@@ -1,0 +1,3 @@
+[submodule "v-diffusion-pytorch"]
+	path = v-diffusion-pytorch
+	url = https://github.com/crowsonkb/v-diffusion-pytorch.git

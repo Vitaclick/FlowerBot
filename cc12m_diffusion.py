@@ -57,6 +57,7 @@ By Katherine Crowson (https://github.com/crowsonkb, https://twitter.com/RiversHa
 import gc
 import math
 import sys
+import os
 
 from IPython import display
 import torch
@@ -79,7 +80,7 @@ model = model.half().cuda().eval().requires_grad_(False)
 clip_model = clip.load(model.clip_model, jit=False, device='cpu')[0]
 
 #@title Settings
-
+outdir = "./out_images"
 #@markdown The text prompt
 prompt = 'A bouquet with disks in Aqua'  #@param {type:"string"}
 
@@ -87,10 +88,10 @@ prompt = 'A bouquet with disks in Aqua'  #@param {type:"string"}
 weight = 5  #@param {type:"number"}
 
 #@markdown Sample this many images.
-n_images = 4  #@param {type:"integer"}
+n_images = 1  #@param {type:"integer"}
 
 #@markdown Specify the number of diffusion timesteps (default is 50, can lower for faster but lower quality sampling).
-steps = 50  #@param {type:"integer"}
+steps = 10  #@param {type:"integer"}
 
 #@markdown The random seed. Change this to sample different images.
 seed = random.randrange(0, 9999999999999999)  #@param {type:"integer"}
@@ -123,6 +124,12 @@ def display_callback(info):
         display.display(utils.to_pil_image(grid))
         tqdm.write(f'')
 
+def save_img():
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
+    images = os.listdir(outdir)
+    filepath = f'{outdir}/{len(images)}.png'
+    return filepath
 
 def run():
     gc.collect()
@@ -134,10 +141,9 @@ def run():
     outs = sampling.plms_sample(cfg_model_fn, x, step_list, {}, callback=display_callback)
     tqdm.write('Done!')
     for i, out in enumerate(outs):
-        filename = f'out_{i}.png'
+        filename = save_img()
         utils.to_pil_image(out).save(filename)
         display.display(display.Image(filename))
-
 
 run()
 

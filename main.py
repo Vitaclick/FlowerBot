@@ -26,6 +26,9 @@ def start(message):
 #     request = message.text.split()
 #     bot.send_photo
 
+@bot.message_handler(commands=['settings', 'setting', 'set', 'настройки'])
+def settings(message):
+    pass
 
 def schedule_checker():
     while True:
